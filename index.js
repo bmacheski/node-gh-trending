@@ -1,7 +1,9 @@
 'use strict'
 
 const cheerio = require('cheerio')
-    , request = require('request')
+const request = require('request')
+
+const base_url = 'https://github.com'
 
 function parse(el) {
   return el.text().split('\n').join('').replace(/ +/g, ' ').trim()
@@ -40,24 +42,29 @@ function parseDevs($, $body, cb) {
   let li = []
 
   $($items).each(function(i, elem) {
-
     let name = $(elem).find('h2.user-leaderboard-list-name')
     let href = $(elem).find('.user-leaderboard-list-name a').attr('href')
     let item = {
       name: parse(name),
       href: href
     }
+
     li.push(item)
   })
   cb(li)
 }
 
-exports.findRepos = function(cb) {
-  const url = 'https://github.com/trending'
+exports.findTopRepos = function(cb) {
+  const url = base_url + '/trending'
   api(url, parseRepos, cb)
 }
 
-exports.findDevs = function(cb) {
-  const url = 'https://github.com/trending/developers'
+exports.findReposByLang = function(lang, cb) {
+  const url = base_url + '/trending?l=' + lang
+  api(url, parseRepos, cb)
+}
+
+exports.findTopDevs = function(cb) {
+  const url = base_url + '/trending/developers'
   api(url, parseDevs, cb)
 }
