@@ -1,7 +1,14 @@
 # node-gh-trending
 
-# Usage
+## Install
+
+```sh
+$ npm install --save node-gh-trending
 ```
+
+## Usage
+
+```js
 const trending = require('node-gh-trending');
 
 trending.findTopRepos(function(res) {
