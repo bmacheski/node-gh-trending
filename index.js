@@ -11,6 +11,7 @@ function parse (el) {
 
 function api (url, fn, cb) {
   request.get(url, function (err, res, body) {
+
     let $ = cheerio.load(body)
     let $body = $('body')
 
@@ -27,17 +28,24 @@ function parseRepos ($, $body, cb) {
 
   $($items).each(function (i, elem) {
     let name = $(elem).find('h3.repo-list-name')
+    let link = $(elem).find('h3.repo-list-name a').attr('href')
     let description = $(elem).find('p.repo-list-description')
     let meta = $(elem).find('p.repo-list-meta')
     let item = {
       name: parse(name),
+      link: base_url + link,
       description: parse(description),
       meta: parse(meta)
     }
 
     li.push(item)
   })
-  cb(li)
+
+  if (~~li) {
+    console.log('Could not find any repos. Github could be `dissecting` trending repos.')
+  } else {
+    cb(li)
+  }
 }
 
 function parseDevs ($, $body, cb) {
@@ -49,7 +57,7 @@ function parseDevs ($, $body, cb) {
     let href = $(elem).find('.user-leaderboard-list-name a').attr('href')
     let item = {
       name: parse(name),
-      href: href
+      href: base_url + href
     }
 
     li.push(item)
@@ -57,17 +65,18 @@ function parseDevs ($, $body, cb) {
   cb(li)
 }
 
-exports.findTopRepos = function (cb) {
+exports.findRepos = function (cb) {
   const url = base_url + '/trending'
   api(url, parseRepos, cb)
 }
 
 exports.findReposByLang = function (lang, cb) {
+  if (typeof(lang) === 'function') throw Error('A language is required as the first argument.')
   const url = base_url + '/trending?l=' + lang
   api(url, parseRepos, cb)
 }
 
-exports.findTopDevs = function (cb) {
+exports.findDevs = function (cb) {
   const url = base_url + '/trending/developers'
   api(url, parseDevs, cb)
 }
