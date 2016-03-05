@@ -11,7 +11,6 @@ function parse (el) {
 
 function api (url, fn, cb) {
   request.get(url, function (err, res, body) {
-
     let $ = cheerio.load(body)
     let $body = $('body')
 
@@ -42,7 +41,7 @@ function parseRepos ($, $body, cb) {
   })
 
   if (~~li) {
-    console.log('Could not find any repos. Github could be `dissecting` trending repos.')
+    console.log('Could not find any repos. Github could be \'dissecting\' trending repos.')
   } else {
     cb(li)
   }
@@ -71,7 +70,7 @@ exports.findRepos = function (cb) {
 }
 
 exports.findReposByLang = function (lang, cb) {
-  if (typeof(lang) === 'function') throw Error('A language is required as the first argument.')
+  if (typeof (lang) === 'function') throw Error('A language is required as the first argument.')
   const url = base_url + '/trending?l=' + lang
   api(url, parseRepos, cb)
 }
