@@ -25,7 +25,7 @@ if a time is not provided, the daily trending repositories will be given.
 ## Usage
 
 ``` js
-var trending = require('node-gh-trending')
+var trending = require("node-gh-trending")
 
 trending.findRepos(function (res) {
   console.log("Today's top repos: ", res)
