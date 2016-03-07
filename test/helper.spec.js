@@ -61,12 +61,12 @@ describe('url helper', () => {
 
     it('should have the correct trending devs url when time is passed in', () => {
       let trendingDevsUrl = 'https://github.com/trending/developers?since=weekly'
-      let res = constructUrl(true, 'weekly', function() {}, true)
+      let res = constructUrl(true, 'weekly', function() {})
       expect(res.url).to.equal(trendingDevsUrl)
     })
 
     it('should have a callback as a callback property when a time is passed in', () => {
-      let res = constructUrl(true, 'weekly', function() {}, true)
+      let res = constructUrl(true, 'weekly', function() {})
       expect(res.callback).to.be.a('function')
     })
 
