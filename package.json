@@ -1,6 +1,6 @@
 {
   "name": "node-gh-trending",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "GitHub trending node module",
   "main": "index.js",
   "scripts": {
