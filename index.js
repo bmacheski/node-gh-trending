@@ -40,11 +40,9 @@ function parseRepos ($, $body, cb) {
     li.push(item)
   })
 
-  if (~~li) {
-    console.log('Could not find any repos. Github could be \'dissecting\' trending repos.')
-  } else {
-    cb(li)
-  }
+  li.length === 0
+    ? console.log('Could not find any repos. Github could be \'dissecting\' trending repos.')
+    : cb(li)
 }
 
 function parseDevs ($, $body, cb) {
@@ -64,18 +62,55 @@ function parseDevs ($, $body, cb) {
   cb(li)
 }
 
-exports.findRepos = function (cb) {
-  const url = base_url + '/trending'
-  api(url, parseRepos, cb)
+const constructUrl = function (lang, time, cb) {
+  let options = {}
+  if (lang && typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
+    options.url = base_url + '/trending/developers?since=' + time
+    options.callback = cb
+  } else if (lang && typeof (lang) === 'boolean' && typeof (time) === 'function') {
+    options.url = base_url + '/trending/developers'
+    options.callback = time
+  } else if (!lang && typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
+    options.url = base_url + '/trending?since=' + time
+    options.callback = cb
+  } else if (!lang && typeof (lang) === 'boolean' && typeof (time) === 'function') {
+    options.url = base_url + '/trending'
+    options.callback = time
+  } else if (typeof (lang) === 'string' && typeof (time) === 'string' && typeof (cb) === 'function') {
+    options.url = base_url + '/trending/' + lang + '?since=' + time
+    options.callback = cb
+  } else if (typeof (lang) === 'string' && typeof (time) === 'function') {
+    options.url = base_url + '/trending/' + lang
+    options.callback = time
+  }
+
+  return options
 }
 
-exports.findReposByLang = function (lang, cb) {
-  if (typeof (lang) === 'function') throw Error('A language is required as the first argument.')
-  const url = base_url + '/trending?l=' + lang
-  api(url, parseRepos, cb)
+const findRepos = function (time, cb) {
+  let res = constructUrl(false, time, cb)
+  let url = res.url
+  let callback = res.callback
+  api(url, parseRepos, callback)
 }
 
-exports.findDevs = function (cb) {
-  const url = base_url + '/trending/developers'
-  api(url, parseDevs, cb)
+const findReposByLang = function (lang, time, cb) {
+  let res = constructUrl(lang, time, cb)
+  let url = res.url
+  let callback = res.callback
+  api(url, parseRepos, callback)
+}
+
+const findDevs = function (time, cb) {
+  let res = constructUrl(true, time, cb)
+  let url = res.url
+  let callback = res.callback
+  api(url, parseDevs, callback)
+}
+
+module.exports = {
+  findDevs: findDevs,
+  findRepos: findRepos,
+  findReposByLang: findReposByLang,
+  constructUrl: constructUrl
 }

@@ -1,8 +1,9 @@
 # node-gh-trending
+==================
 
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Access GitHub trending repositories / developers
+> Access GitHub trending repositories / developers
 
 ## Install
 
@@ -10,20 +11,35 @@ Access GitHub trending repositories / developers
 $ npm install --save node-gh-trending
 ```
 
+## API
+
+findRepos([time], callback)
+
+findReposByLang(language, [time], callback)
+
+findDevs([time], callback)
+
+If you would like trending weekly or monthly results you can provide those as the time argument and
+if a time is not provided, the daily trending repositories will be given.
+
 ## Usage
 
 ``` js
 const trending = require('node-gh-trending')
 
 trending.findRepos(function(res) {
-  console.log('top repos: ', res)
+  console.log('Today's top repos:', res)
 })
 
-trending.findReposByLang('javascript', function(res) {
-  console.log('top javascript repos: ', res)
+trending.findReposByLang('javascript', 'weekly' function(res) {
+  console.log('This week's top javascript repos:', res)
 })
 
-trending.findDevs(function(res) {
-  console.log('top devs: ', res)
+trending.findDevs('monthly', function(res) {
+  console.log('This month's top devs:', res)
 })
 ```
+
+## License
+
+  MIT
