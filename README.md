@@ -7,24 +7,24 @@ Access GitHub trending repositories / developers
 
 ## Install
 
-``` js
+```javascript
 $ npm install --save node-gh-trending
 ```
 
 ## API
 
-findRepos([time], callback)
+#### `findRepos([time], callback)`
 
-findReposByLang(language, [time], callback)
+#### `findReposByLang(language, [time], callback)`
 
-findDevs([time], callback)
+#### `findDevs([time], callback)`
 
-If you would like trending weekly or monthly results you can provide those as the time argument and
+If you would like trending weekly or monthly results, you can provide those as the time option and
 if a time is not provided, the daily trending repositories will be given.
 
 ## Usage
 
-``` js
+```javascript
 const trending = require('node-gh-trending')
 
 trending.findRepos(function(res) {
