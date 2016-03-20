@@ -5,11 +5,11 @@ const request = require('request')
 
 const base_url = 'https://github.com'
 
-function parse (el) {
+const parse = function (el) {
   return el.text().split('\n').join('').replace(/ +/g, ' ').trim()
 }
 
-function api (url, fn, cb) {
+const api = function (url, fn, cb) {
   request.get(url, function (err, res, body) {
     let $ = cheerio.load(body)
     let $body = $('body')
@@ -21,7 +21,7 @@ function api (url, fn, cb) {
   })
 }
 
-function parseRepos ($, $body, cb) {
+const parseRepos = function ($, $body, cb) {
   let $items = $body.find('li.repo-list-item')
   let li = []
 
@@ -62,42 +62,48 @@ function parseDevs ($, $body, cb) {
   cb(li)
 }
 
+const matchTime = function (time) {
+  switch (time.toLowerCase()) {
+    case 'weekly':
+    case 'monthly':
+    case 'daily':
+      return true
+    default:
+      return false
+  }
+}
+
 const constructUrl = function (lang, time, cb) {
   let options = {}
-  if (lang && typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
+
+  if (typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
     options.url = base_url + '/trending/developers?since=' + time
     options.callback = cb
-  } else if (lang && typeof (lang) === 'boolean' && typeof (time) === 'function') {
+  } else if (typeof (lang) === 'boolean' && typeof (time) === 'function') {
     options.url = base_url + '/trending/developers'
-    options.callback = time
-  } else if (!lang && typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
-    options.url = base_url + '/trending?since=' + time
-    options.callback = cb
-  } else if (!lang && typeof (lang) === 'boolean' && typeof (time) === 'function') {
-    options.url = base_url + '/trending'
     options.callback = time
   } else if (typeof (lang) === 'string' && typeof (time) === 'string' && typeof (cb) === 'function') {
     options.url = base_url + '/trending/' + lang + '?since=' + time
     options.callback = cb
-  } else if (typeof (lang) === 'string' && typeof (time) === 'function') {
+  } else if (typeof (lang) === 'string' && matchTime(lang) && typeof (time) === 'function') {
+    options.url = base_url + '/trending?since=' + lang
+    options.callback = time
+  } else if (typeof (lang) === 'string' && !matchTime(lang) && typeof (time) === 'function') {
     options.url = base_url + '/trending/' + lang
     options.callback = time
+  } else {
+    options.url = base_url + '/trending'
+    options.callback = lang
   }
 
   return options
 }
 
-const findRepos = function (time, cb) {
-  let res = constructUrl(false, time, cb)
-  let url = res.url
-  let callback = res.callback
-  api(url, parseRepos, callback)
-}
-
-const findReposByLang = function (lang, time, cb) {
+const findRepos = function (lang, time, cb) {
   let res = constructUrl(lang, time, cb)
   let url = res.url
   let callback = res.callback
+
   api(url, parseRepos, callback)
 }
 
@@ -105,12 +111,13 @@ const findDevs = function (time, cb) {
   let res = constructUrl(true, time, cb)
   let url = res.url
   let callback = res.callback
+
   api(url, parseDevs, callback)
 }
 
 module.exports = {
   findDevs: findDevs,
   findRepos: findRepos,
-  findReposByLang: findReposByLang,
-  constructUrl: constructUrl
+  constructUrl: constructUrl,
+  matchTime: matchTime
 }

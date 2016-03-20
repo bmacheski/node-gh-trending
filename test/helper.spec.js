@@ -1,6 +1,7 @@
 'use strict'
 
 const constructUrl = require('../index').constructUrl
+const matchTime = require('../index').matchTime
 const expect = require('chai').expect
 
 describe('url helper', () => {
@@ -9,50 +10,25 @@ describe('url helper', () => {
 
     it('should have the correct trending url when a time is passed in', () => {
       let trendingReposUrl = 'https://github.com/trending?since=weekly'
-      let res = constructUrl(false, 'weekly', function() {})
+      let res = constructUrl('weekly', function() {})
       expect(res.url).to.equal(trendingReposUrl)
     })
 
     it('should have a callback when a time is passed in', () => {
       let trendingReposUrl = 'https://github.com/trending?since=weekly'
-      let res = constructUrl(false, 'weekly', function() {})
+      let res = constructUrl('weekly', function() {})
       expect(res.callback).to.be.a('function')
     })
 
     it('should have the correct trending url when a time is not passed in', () => {
       let trendingReposUrl = 'https://github.com/trending'
-      let res = constructUrl(false, function() {})
+      let res = constructUrl(function() {})
       expect(res.url).to.equal(trendingReposUrl)
     })
 
     it('should have a callback when a time is not passed in', () => {
       let trendingReposUrl = 'https://github.com/trending?since=weekly'
-      let res = constructUrl(false, function() {})
-      expect(res.callback).to.be.a('function')
-    })
-  })
-
-  describe('findReposByLang url', () => {
-
-    it('should have the correct trending language url when time and language are passed in', () => {
-      let trendingReposUrl = 'https://github.com/trending/javascript?since=weekly'
-      let res = constructUrl('javascript', 'weekly', function() {})
-      expect(res.url).to.equal(trendingReposUrl)
-    })
-
-    it('should have a callback when time and language are passed in', () => {
-      let res = constructUrl('javascript', function() {})
-      expect(res.callback).to.be.a('function')
-    })
-
-    it('should have the correct trending language url when just a language is passed in', () => {
-      let trendingReposUrl = 'https://github.com/trending/javascript'
-      let res = constructUrl('javascript', function() {})
-      expect(res.url).to.equal(trendingReposUrl)
-    })
-
-    it('should have a callback when just a language is passed in', () => {
-      let res = constructUrl('javascript', function() {})
+      let res = constructUrl(function() {})
       expect(res.callback).to.be.a('function')
     })
   })
@@ -81,5 +57,22 @@ describe('url helper', () => {
       let res = constructUrl(true, function() {})
       expect(res.url).to.equal(url)
     })
+  })
+})
+
+describe('matchTime util', () => {
+  it('should return true when a time is passed in', () => {
+    let res = matchTime('weekly')
+    expect(res).to.equal(true)
+  })
+
+  it('should return false when an empty string is not passed in', () => {
+    let res = matchTime('')
+    expect(res).to.equal(false)
+  })
+
+  it('should return true and ignore case with a non-lower case argument', () => {
+    let res = matchTime('WeEkLy')
+    expect(res).to.equal(true)
   })
 })

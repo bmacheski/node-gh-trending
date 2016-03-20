@@ -13,9 +13,7 @@ $ npm install --save node-gh-trending
 
 ## API
 
-#### `findRepos([time], callback)`
-
-#### `findReposByLang(language, [time], callback)`
+#### `findRepos([lang], [time], callback)`
 
 #### `findDevs([time], callback)`
 
@@ -25,19 +23,16 @@ if a time is not provided, the daily trending repositories will be given.
 ## Usage
 
 ``` js
-var trending = require("node-gh-trending")
+const trending = require("node-gh-trending")
 
-trending.findRepos(function (res) {
+trending.findRepos("javascript", "weekly", function (res) {
   console.log("Today's top repos: ", res)
-})
-
-trending.findReposByLang("javascript", "weekly", function (res) {
-  console.log("This week's top javascript repos: ", res)
 })
 
 trending.findDevs("monthly", function (res) {
   console.log("This month's top devs: ", res)
 })
+
 ```
 
 ## License
