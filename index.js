@@ -17,6 +17,7 @@ const api = function (url, fn, cb) {
     if (err) {
       throw err
     }
+
     fn($, $body, cb)
   })
 }
@@ -40,9 +41,7 @@ const parseRepos = function ($, $body, cb) {
     li.push(item)
   })
 
-  li.length === 0
-    ? console.log('Could not find any repos. Github could be \'dissecting\' trending repos.')
-    : cb(li)
+  cb(li)
 }
 
 function parseDevs ($, $body, cb) {
