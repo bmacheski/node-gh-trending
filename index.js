@@ -44,7 +44,7 @@ const parseRepos = function ($, $body, cb) {
   cb(li)
 }
 
-function parseDevs ($, $body, cb) {
+const parseDevs = function ($, $body, cb) {
   let $items = $body.find('li.user-leaderboard-list-item')
   let li = []
 
@@ -58,6 +58,7 @@ function parseDevs ($, $body, cb) {
 
     li.push(item)
   })
+
   cb(li)
 }
 
@@ -99,19 +100,17 @@ const constructUrl = function (lang, time, cb) {
 }
 
 const findRepos = function (lang, time, cb) {
-  let res = constructUrl(lang, time, cb)
-  let url = res.url
-  let callback = res.callback
-
-  api(url, parseRepos, callback)
+  util(lang, time, cb, parseRepos)
 }
 
 const findDevs = function (time, cb) {
-  let res = constructUrl(true, time, cb)
-  let url = res.url
-  let callback = res.callback
+  util(true, time, cb, parseDevs)
+}
 
-  api(url, parseDevs, callback)
+const util = function (bool, time, cb, fn) {
+  let { url, callback } = constructUrl(bool, time, cb)
+
+  api(url, fn, callback)
 }
 
 module.exports = {
