@@ -77,22 +77,22 @@ const constructUrl = function (lang, time, cb) {
   let options = {}
 
   if (typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
-    options.url = base_url + '/trending/developers?since=' + time
+    options.url = `${base_url}/trending/developers?since=${time}`
     options.callback = cb
   } else if (typeof (lang) === 'boolean' && typeof (time) === 'function') {
-    options.url = base_url + '/trending/developers'
+    options.url = `${base_url}/trending/developers`
     options.callback = time
   } else if (typeof (lang) === 'string' && typeof (time) === 'string' && typeof (cb) === 'function') {
-    options.url = base_url + '/trending/' + lang + '?since=' + time
+    options.url = `${base_url}/trending/${lang}?since=${time}`
     options.callback = cb
   } else if (typeof (lang) === 'string' && matchTime(lang) && typeof (time) === 'function') {
-    options.url = base_url + '/trending?since=' + lang
+    options.url = `${base_url}/trending?since=${lang}`
     options.callback = time
   } else if (typeof (lang) === 'string' && !matchTime(lang) && typeof (time) === 'function') {
-    options.url = base_url + '/trending/' + lang
+    options.url = `${base_url}/trending/${lang}`
     options.callback = time
   } else {
-    options.url = base_url + '/trending'
+    options.url = `${base_url}/trending`
     options.callback = lang
   }
 
