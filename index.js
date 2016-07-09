@@ -51,9 +51,9 @@ const parseRepos = function ($, $body, cb) {
 }
 
 const parseDevs = function ($, $body, cb) {
-  let { items, li } = find('li.user-leaderboard-list-item')
+  let { items, li } = find($body, 'li.user-leaderboard-list-item')
 
-  $($items).each(function (i, elem) {
+  $(items).each(function (i, elem) {
     let el = $(elem)
     let name = el.find('h2.user-leaderboard-list-name')
     let href = el.find('.user-leaderboard-list-name a').attr('href')
