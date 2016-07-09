@@ -22,18 +22,24 @@ const api = function (url, fn, cb) {
   })
 }
 
-const parseRepos = function ($, $body, cb) {
-  let $items = $body.find('li.repo-list-item')
-  let li = []
+const find = function($body, el) {
+  let $items = $body.find(el)
 
-  $($items).each(function (i, elem) {
-    let name = $(elem).find('h3.repo-list-name')
-    let link = $(elem).find('h3.repo-list-name a').attr('href')
-    let description = $(elem).find('p.repo-list-description')
-    let meta = $(elem).find('p.repo-list-meta')
+  return { items: $items, li: [] }
+}
+
+const parseRepos = function ($, $body, cb) {
+  let { li, items } = find($body, 'li.repo-list-item')
+
+  $(items).each(function (i, elem) {
+    let el = $(elem)
+    let name = el.find('h3.repo-list-name')
+    let link = el.find('h3.repo-list-name a').attr('href')
+    let description = el.find('p.repo-list-description')
+    let meta = el.find('p.repo-list-meta')
     let item = {
       name: parse(name),
-      link: base_url + link,
+      link: `${base_url}${link}`,
       description: parse(description),
       meta: parse(meta)
     }
@@ -45,12 +51,12 @@ const parseRepos = function ($, $body, cb) {
 }
 
 const parseDevs = function ($, $body, cb) {
-  let $items = $body.find('li.user-leaderboard-list-item')
-  let li = []
+  let { items, li } = find('li.user-leaderboard-list-item')
 
   $($items).each(function (i, elem) {
-    let name = $(elem).find('h2.user-leaderboard-list-name')
-    let href = $(elem).find('.user-leaderboard-list-name a').attr('href')
+    let el = $(elem)
+    let name = el.find('h2.user-leaderboard-list-name')
+    let href = el.find('.user-leaderboard-list-name a').attr('href')
     let item = {
       name: parse(name),
       href: base_url + href

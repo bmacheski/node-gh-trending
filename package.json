@@ -4,8 +4,7 @@
   "description": "GitHub trending node module",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "lint": "standard"
+    "test": "mocha"
   },
   "keywords": [
     "github",
@@ -27,7 +26,6 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^2.4.5",
-    "standard": "^6.0.7"
+    "mocha": "^2.4.5"
   }
 }
