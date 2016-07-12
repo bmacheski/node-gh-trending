@@ -5,9 +5,7 @@ const request = require('request')
 
 const base_url = 'https://github.com'
 
-const parse = function (el) {
-  return el.text().split('\n').join('').replace(/ +/g, ' ').trim()
-}
+const parse = el => el.text().split('\n').join('').replace(/ +/g, ' ').trim()
 
 const api = function (url, fn, cb) {
   request.get(url, function (err, res, body) {
@@ -69,14 +67,7 @@ const parseDevs = function ($, $body, cb) {
 }
 
 const matchTime = function (time) {
-  switch (time.toLowerCase()) {
-    case 'weekly':
-    case 'monthly':
-    case 'daily':
-      return true
-    default:
-      return false
-  }
+  return time.toLowerCase().match(/weekly|monthly|daily/) ? true : false
 }
 
 const constructUrl = function (lang, time, cb) {
@@ -105,13 +96,10 @@ const constructUrl = function (lang, time, cb) {
   return options
 }
 
-const findRepos = function (lang, time, cb) {
-  util(lang, time, cb, parseRepos)
-}
+const findRepos = (lang, time, cb) => util(lang, time, cb, parseRepos)
 
-const findDevs = function (time, cb) {
-  util(true, time, cb, parseDevs)
-}
+const findDevs = (time, cb) => util(true, time, cb, parseDevs)
+
 
 const util = function (bool, time, cb, fn) {
   let { url, callback } = constructUrl(bool, time, cb)
