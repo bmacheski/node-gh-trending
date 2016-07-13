@@ -57,7 +57,7 @@ const parseDevs = function ($, $body, cb) {
     let href = el.find('.user-leaderboard-list-name a').attr('href')
     let item = {
       name: parse(name),
-      href: base_url + href
+      href: `${base_url}${href}`
     }
 
     li.push(item)
@@ -67,7 +67,7 @@ const parseDevs = function ($, $body, cb) {
 }
 
 const matchTime = function (time) {
-  return time.toLowerCase().match(/weekly|monthly|daily/) ? true : false
+  return time.match(/weekly|monthly|daily/i) ? true : false
 }
 
 const constructUrl = function (lang, time, cb) {
@@ -99,7 +99,6 @@ const constructUrl = function (lang, time, cb) {
 const findRepos = (lang, time, cb) => util(lang, time, cb, parseRepos)
 
 const findDevs = (time, cb) => util(true, time, cb, parseDevs)
-
 
 const util = function (bool, time, cb, fn) {
   let { url, callback } = constructUrl(bool, time, cb)
