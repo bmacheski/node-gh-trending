@@ -3,9 +3,6 @@ const request = require('request')
 
 const base_url = 'https://github.com'
 
-const parse = el =>
-  el.text().split('\n').join('').replace(/ +/g, ' ').trim()
-
 const api = (url, fn, cb) => {
   request.get(url, (err, res, body) => {
     const $ = cheerio.load(body)
@@ -89,8 +86,11 @@ const constructUrl = (lang, time, cb) => {
   return options
 }
 
-const matchTime = (time) =>
-  Boolean(time.match(/weekly|monthly|daily/i))
+const parse = el =>
+  el.text().split('\n').join('').replace(/ +/g, ' ').trim()
+
+const matchTime = time =>
+  /weekly|monthly|daily/i.test(time)
 
 const findRepos = (lang, time, cb) =>
   util(lang, time, cb, parseRepos)
