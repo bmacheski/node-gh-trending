@@ -1,35 +1,32 @@
-'use strict'
-
 const cheerio = require('cheerio')
 const request = require('request')
 
 const base_url = 'https://github.com'
 
-const parse = el => el.text().split('\n').join('').replace(/ +/g, ' ').trim()
+const parse = el =>
+  el.text().split('\n').join('').replace(/ +/g, ' ').trim()
 
-const api = function (url, fn, cb) {
-  request.get(url, function (err, res, body) {
-    let $ = cheerio.load(body)
-    let $body = $('body')
+const api = (url, fn, cb) => {
+  request.get(url, (err, res, body) => {
+    const $ = cheerio.load(body)
+    const $body = $('body')
 
-    if (err) {
-      throw err
-    }
+    if (err) throw err
 
     fn($, $body, cb)
   })
 }
 
-const find = function($body, el) {
-  let $items = $body.find(el)
+const find = ($body, el) => {
+  const $items = $body.find(el)
 
   return { items: $items, li: [] }
 }
 
-const parseRepos = function ($, $body, cb) {
-  let { li, items } = find($body, 'li.repo-list-item')
+const parseRepos = ($, $body, cb) => {
+  const { li, items } = find($body, 'li.repo-list-item')
 
-  $(items).each(function (i, elem) {
+  $(items).each((i, elem) => {
     let el = $(elem)
     let name = el.find('h3.repo-list-name')
     let link = el.find('h3.repo-list-name a').attr('href')
@@ -48,10 +45,10 @@ const parseRepos = function ($, $body, cb) {
   cb(li)
 }
 
-const parseDevs = function ($, $body, cb) {
-  let { items, li } = find($body, 'li.user-leaderboard-list-item')
+const parseDevs = ($, $body, cb) => {
+  const { items, li } = find($body, 'li.user-leaderboard-list-item')
 
-  $(items).each(function (i, elem) {
+  $(items).each((i, elem) => {
     let el = $(elem)
     let name = el.find('h2.user-leaderboard-list-name')
     let href = el.find('.user-leaderboard-list-name a').attr('href')
@@ -66,12 +63,8 @@ const parseDevs = function ($, $body, cb) {
   cb(li)
 }
 
-const matchTime = function (time) {
-  return time.match(/weekly|monthly|daily/i) ? true : false
-}
-
-const constructUrl = function (lang, time, cb) {
-  let options = {}
+const constructUrl = (lang, time, cb) => {
+  const options = {}
 
   if (typeof (lang) === 'boolean' && typeof (time) === 'string' && typeof (cb) === 'function') {
     options.url = `${base_url}/trending/developers?since=${time}`
@@ -96,19 +89,24 @@ const constructUrl = function (lang, time, cb) {
   return options
 }
 
-const findRepos = (lang, time, cb) => util(lang, time, cb, parseRepos)
+const matchTime = (time) =>
+  Boolean(time.match(/weekly|monthly|daily/i))
 
-const findDevs = (time, cb) => util(true, time, cb, parseDevs)
+const findRepos = (lang, time, cb) =>
+  util(lang, time, cb, parseRepos)
 
-const util = function (bool, time, cb, fn) {
-  let { url, callback } = constructUrl(bool, time, cb)
+const findDevs = (time, cb) =>
+  util(true, time, cb, parseDevs)
+
+const util = (bool, time, cb, fn) => {
+  const { url, callback } = constructUrl(bool, time, cb)
 
   api(url, fn, callback)
 }
 
 module.exports = {
-  findDevs: findDevs,
-  findRepos: findRepos,
-  constructUrl: constructUrl,
-  matchTime: matchTime
+  findDevs,
+  findRepos,
+  constructUrl,
+  matchTime
 }
